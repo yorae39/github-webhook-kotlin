@@ -3,14 +3,14 @@ package com.lpa.githubwebhookkotlin.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lpa.githubwebhookkotlin.log.logger
 import com.lpa.githubwebhookkotlin.model.Event
-import com.lpa.githubwebhookkotlin.repository.EventRepository
+import com.lpa.githubwebhookkotlin.repository.EventsRepository
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class EventService(
-    val eventRepository: EventRepository,
+    val eventRepository: EventsRepository,
     val rabbitTemplate: RabbitTemplate,
     val objectMapper: ObjectMapper,
     @Value("\${queue.name")
@@ -22,7 +22,7 @@ class EventService(
     fun findById(id: String) = eventRepository.findById(id)
 
     fun postEvents(request: String) : String {
-        val event = eventRepository.save(Event(message = request))
+        val event = eventRepository.save(Event(msg = request))
         logger().info("Persisted the github event ${event.id} in db")
         rabbitTemplate.convertAndSend(queueName, objectMapper.writeValueAsString(event))
         logger().info("Published the github event ${event.id} to rabbitmq")

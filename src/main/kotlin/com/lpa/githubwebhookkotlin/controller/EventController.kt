@@ -1,5 +1,6 @@
 package com.lpa.githubwebhookkotlin.controller
 
+import com.lpa.githubwebhookkotlin.model.Event
 import com.lpa.githubwebhookkotlin.service.EventService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -12,7 +13,7 @@ class EventController(
     val eventService: EventService
 ) {
     @GetMapping
-    fun getAllEvents() = eventService.findAll()
+    fun getAllEvents() : List<Event> = eventService.findAll()
 
     @GetMapping("{id}")
     fun getEvent(@PathVariable id: String) = eventService.findById(id)
